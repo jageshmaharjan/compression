@@ -53,7 +53,7 @@ cp = ModelCheckpoint("denoising.h5", monitor='val_loss', verbose=0, save_best_on
 tb = TensorBoard(log_dir='compress/', histogram_freq=0, write_graph=False)
 
 autoencoder.fit(x_train_noisy, x_train,
-                epochs=1,
+                epochs=100,
                 batch_size=128,
                 shuffle=True,
                 validation_data=(x_test_noisy, x_test),
@@ -85,4 +85,4 @@ for i in range(n):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
 plt.savefig('compress/result.png')
-plt.show()
+# plt.show()
