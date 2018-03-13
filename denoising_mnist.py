@@ -53,12 +53,12 @@ filepath = '/home/jugs/PycharmProjects/compression/denoising.h5'
 cp = ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 tb = TensorBoard(log_dir=filepath, histogram_freq=0, write_graph=False)
 
-# autoencoder.fit(x_train_noisy, x_train,
-#                 epochs=1,
-#                 batch_size=128,
-#                 shuffle=True,
-#                 validation_data=(x_test_noisy, x_test),
-#                 callbacks=[tb, cp])
+autoencoder.fit(x_train_noisy, x_train,
+                epochs=1,
+                batch_size=128,
+                shuffle=True,
+                validation_data=(x_test_noisy, x_test),
+                callbacks=[tb, cp])
 
 decoded_imgs = autoencoder.predict(x_test)
 

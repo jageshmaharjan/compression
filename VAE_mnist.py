@@ -70,11 +70,11 @@ vae.add_loss(vae_loss)
 vae.compile(optimizer='rmsprop', loss='binary_crossentropy', metrics=['acc'])
 vae.summary()
 
-# vae.fit(x_train,
-#         shuffle=True,
-#         epochs=epochs,
-#         batch_size=batch_size,
-#         validation_data=(x_test, None))
+vae.fit(x_train,
+        shuffle=True,
+        epochs=epochs,
+        batch_size=batch_size,
+        validation_data=(x_test, None))
 
 encoder = Model(x, z_mean)
 
