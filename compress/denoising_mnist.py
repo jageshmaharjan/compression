@@ -48,10 +48,9 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy', metrics=['
 
 autoencoder.summary()
 
-
 filepath = 'compress/denoising.h5'
-cp = ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
-tb = TensorBoard(log_dir=filepath, histogram_freq=0, write_graph=False)
+cp = ModelCheckpoint("denoising.h5", monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+tb = TensorBoard(log_dir='compress/', histogram_freq=0, write_graph=False)
 
 autoencoder.fit(x_train_noisy, x_train,
                 epochs=1,
