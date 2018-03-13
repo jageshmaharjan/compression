@@ -49,7 +49,7 @@ autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy', metrics=['
 autoencoder.summary()
 
 
-filepath = '/home/jugs/PycharmProjects/compression/denoising.h5'
+filepath = 'compress/denoising.h5'
 cp = ModelCheckpoint(filepath, monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 tb = TensorBoard(log_dir=filepath, histogram_freq=0, write_graph=False)
 
@@ -85,5 +85,5 @@ for i in range(n):
     plt.gray()
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
-plt.savefig('/home/jugs/PycharmProjects/compression/result.png')
+plt.savefig('compress/result.png')
 plt.show()
