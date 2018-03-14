@@ -1,7 +1,7 @@
 from keras.layers import Input,Dense, Conv2D, MaxPooling2D,UpSampling2D
 from keras.models import Sequential, Model
 # from keras.callbacks import TensorBoard, ModelCheckpoint
-
+import matplotlib.pyplot as plt
 from imutils import paths
 import numpy as np
 import argparse
@@ -63,4 +63,25 @@ if __name__ == '__main__':
 
     autoencoder.fit(x_train, x_train, epochs=50, batch_size=128,
                     shuffle=True, validation_data=(x_test, x_test))
-    print(x)
+
+    decoded_imgs = autoencoder.predict(x_test)
+
+    n = 10
+    plt.figure(figsize=(20, 4))
+    for i in range(n):
+        # display original
+        ax = plt.subplot(2, n, i + 1)
+        plt.imshow(x_test[i].reshape(96,96,3))
+        plt.gray()
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+        # display reconstruction
+        ax = plt.subplot(2, n, i + 1 + n)
+        plt.imshow(decoded_imgs[i].reshape(96,96,3))
+        plt.gray()
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+    plt.savefig('face.png')
+    # plt.show()
+
