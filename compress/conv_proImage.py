@@ -1,3 +1,4 @@
+import time
 from keras.layers import Input,Dense, Conv2D, MaxPooling2D,UpSampling2D
 from keras.models import Model
 from keras import backend as k
@@ -88,27 +89,28 @@ if __name__ == '__main__':
 
 
     tb = TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=True, write_images=True, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
-    cp = ModelCheckpoint(filepath='./models', monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
-    autoencoder.fit(x_train, x_train, epochs=2, batch_size=10,
+    cp = ModelCheckpoint(filepath='./models/'+time.time(), monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+
+    autoencoder.fit(x_train, x_train, epochs=100, batch_size=256,
                         shuffle=True, validation_data=(x_test, x_test),
                     callbacks=[cp,tb])
 
     decoded_imgs = autoencoder.predict(x_test)
 
-    n = 10
-    plt.figure(figsize=(20, 4))
-    for i in range(n):
-        # display original
-        ax = plt.subplot(2, n, i + 1)
-        plt.imshow(x_test[i].reshape(342,512, 3))
-        plt.gray()
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
-
-        # display reconstruction
-        ax = plt.subplot(2, n, i + 1 + n)
-        plt.imshow(decoded_imgs[i].reshape(342,512, 3))
-        plt.gray()
-        ax.get_xaxis().set_visible(False)
-        ax.get_yaxis().set_visible(False)
-    plt.savefig('pro_img.png')
+    # n = 10
+    # plt.figure(figsize=(20, 4))
+    # for i in range(n):
+    #     # display original
+    #     ax = plt.subplot(2, n, i + 1)
+    #     plt.imshow(x_test[i].reshape(342,512, 3))
+    #     plt.gray()
+    #     ax.get_xaxis().set_visible(False)
+    #     ax.get_yaxis().set_visible(False)
+    #
+    #     # display reconstruction
+    #     ax = plt.subplot(2, n, i + 1 + n)
+    #     plt.imshow(decoded_imgs[i].reshape(342,512, 3))
+    #     plt.gray()
+    #     ax.get_xaxis().set_visible(False)
+    #     ax.get_yaxis().set_visible(False)
+    # plt.savefig('pro_img.png')
