@@ -1,4 +1,6 @@
 import time
+
+from datetime import date
 from keras.layers import Input,Dense, Conv2D, MaxPooling2D,UpSampling2D
 from keras.models import Model
 from keras import backend as k
@@ -89,7 +91,7 @@ if __name__ == '__main__':
 
 
     tb = TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=True, write_images=True, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
-    cp = ModelCheckpoint(filepath='./models/'+time.time(), monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
+    cp = ModelCheckpoint(filepath='./models/'+str(date)+'.h5', monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
 
     autoencoder.fit(x_train, x_train, epochs=100, batch_size=256,
                         shuffle=True, validation_data=(x_test, x_test),
