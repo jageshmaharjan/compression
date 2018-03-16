@@ -25,10 +25,9 @@ if __name__ == '__main__':
 
     onlyfiles_train = [f for f in listdir(path_1)]
     print(len(onlyfiles_train))
-
     train_data = []
-    for f in onlyfiles_train[:]:
-        fp = os.path.join(onlyfiles_train, f)
+    for f in onlyfiles_train:
+        fp = os.path.join(path_1, f)
         x = cv2.imread(fp,1)
         x = image_to_feature_vector(x)
         x = x.astype('float32') / 255
@@ -38,7 +37,7 @@ if __name__ == '__main__':
     onlyfiles_test = [f for f in listdir(path_2)]
     print(len(onlyfiles_test ))
     test_data = []
-    for f in onlyfiles_test [:]:
+    for f in onlyfiles_test:
         fp = os.path.join(path_2, f)
         x = cv2.imread(fp,1)
         x = image_to_feature_vector(x)
