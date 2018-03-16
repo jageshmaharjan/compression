@@ -1,7 +1,7 @@
 from keras.layers import Input,Dense, Conv2D, MaxPooling2D,UpSampling2D
 from keras.models import Model
 from keras import backend as k
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, ModelCheckpoint
 import matplotlib.pyplot as plt
 from keras.datasets import mnist
 import numpy as np
@@ -17,26 +17,38 @@ def image_to_feature_vector(img, size=(512,342)):         # Avg Dim 1798,1260;  
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--path', help='data file path', type=str)
+    parser.add_argument('--path_1', help='data file path', type=str)
+    parser.add_argument('--path_2', help='data file path', type=str)
     args = parser.parse_args()
-    path = args.path
+    path_1 = args.path_1
+    path_2 = args.path_2
 
-    onlyfiles = [f for f in listdir(path)]
-    print(len(onlyfiles))
+    onlyfiles_train = [f for f in listdir(path_1)]
+    print(len(onlyfiles_train))
 
-    data = []
-    for f in onlyfiles[:500]:
-        fp = os.path.join(path, f)
+    train_data = []
+    for f in onlyfiles_train[:]:
+        fp = os.path.join(onlyfiles_train, f)
         x = cv2.imread(fp,1)
         x = image_to_feature_vector(x)
         x = x.astype('float32') / 255
         x = np.reshape(x, (342,512, 3))
-        data.append(x)
+        train_data.append(x)
 
-    print(len(data))
-    x_train = np.reshape(data[:399], (399, 342,512, 3))
-    x_test = np.reshape(data[400:480], (80, 342,512, 3))
-    x_val1id = np.reshape(data[481:500], (19, 342,512, 3))
+    onlyfiles_test = [f for f in listdir(path_2)]
+    print(len(onlyfiles_test ))
+    test_data = []
+    for f in onlyfiles_test [:]:
+        fp = os.path.join(path_2, f)
+        x = cv2.imread(fp,1)
+        x = image_to_feature_vector(x)
+        x = x.astype('float32') / 255
+        x = np.reshape(x, (342,512, 3))
+        test_data.append(x)
+
+    x_train = np.reshape(train_data[:], (len(train_data), 342,512, 3))
+    x_test = np.reshape(test_data[:], (len(test_data), 342,512, 3))
+    # x_val1id = np.reshape(data[481:500], (19, 342,512, 3))
     print(x_train[1].shape)
 
     input_img = Input(shape=(342,512,3))
@@ -75,7 +87,29 @@ if __name__ == '__main__':
     decoder_layer = autoencoder.layers[-4]
     decoder = Model(encoded_input, decoder_layer(encoded_input) )
 
+
+    tb = TensorBoard(log_dir='./logs', histogram_freq=0, batch_size=32, write_graph=True, write_grads=True, write_images=True, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
+    cp = ModelCheckpoint(filepath='./models', monitor='val_loss', verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=1)
     autoencoder.fit(x_train, x_train, epochs=2, batch_size=10,
-                        shuffle=True, validation_data=(x_test, x_test))
+                        shuffle=True, validation_data=(x_test, x_test),
+                    callbacks=[cp,tb])
 
     decoded_imgs = autoencoder.predict(x_test)
+
+    n = 10
+    plt.figure(figsize=(20, 4))
+    for i in range(n):
+        # display original
+        ax = plt.subplot(2, n, i + 1)
+        plt.imshow(x_test[i].reshape(342,512, 3))
+        plt.gray()
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+
+        # display reconstruction
+        ax = plt.subplot(2, n, i + 1 + n)
+        plt.imshow(decoded_imgs[i].reshape(342,512, 3))
+        plt.gray()
+        ax.get_xaxis().set_visible(False)
+        ax.get_yaxis().set_visible(False)
+    plt.savefig('pro_img.png')
